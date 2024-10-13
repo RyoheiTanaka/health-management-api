@@ -1,0 +1,26 @@
+# Laravel用のDockerfile
+
+# ベースイメージとしてPHP 8.2を使用
+FROM php:8.2-fpm
+
+# 必要なパッケージをインストール
+RUN apt-get update && apt-get install -y \
+    git \
+    unzip \
+    libpq-dev \
+    && docker-php-ext-install pdo pdo_pgsql
+
+# Composerをインストール
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# 作業ディレクトリを設定
+WORKDIR /var/www/html
+
+# 権限を設定
+RUN chown -R www-data:www-data /var/www/html
+
+# Laravelアプリケーションの起動準備\
+COPY . .
+
+# 権限を設定
+RUN chmod -R 755 /var/www/html/storage /var/www/html/bootstrap/cache
