@@ -6,6 +6,10 @@ services:
         container_name: laravel_app
         volumes:
             - .:/var/www/html # Laravelのソースコードをマウント
+            - ./infra/php/php.ini:/usr/local/etc/php/php.ini # php設定ファイルのマウント
+            - ./infra/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini # Xdebug設定ファイルのマウント
+        environment:
+            PHP_IDE_CONFIG: "serverName=docker" # IDE側で設定するサーバー名と一致させる
         env_file:
             - ./infra/.env # Docker用の環境変数ファイル
         depends_on:
