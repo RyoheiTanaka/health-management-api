@@ -4,11 +4,24 @@
 FROM php:8.2-fpm
 
 # 必要なパッケージをインストール
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y cron \
     git \
     unzip \
     libpq-dev \
-    && docker-php-ext-install pdo pdo_pgsql
+    && docker-php-ext-install pdo pdo_pgsql \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# cronジョブを設定
+COPY ./infra/php/cron_jobs /etc/cron.d/laravel_cron
+RUN chmod 0644 /etc/cron.d/laravel_cron && crontab /etc/cron.d/laravel_cron
+
+# cronとphp-fpmを同時に実行するスクリプトを追加
+COPY ./infra/php/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# デフォルトコマンドをエントリポイントスクリプトに置き換え
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 # Xdebugのインストール
 RUN pecl install xdebug
