@@ -9,3 +9,5 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote')->hourly();
 
 Schedule::command('app:import-healthplanet-data')->dailyAt('12:00');
+
+Schedule::command('app:update-fitbit-data')->dailyAt('13:00');
