@@ -11,3 +11,5 @@ Artisan::command('inspire', function () {
 Schedule::command('app:import-healthplanet-data')->dailyAt('12:00');
 
 Schedule::command('app:update-fitbit-data')->dailyAt('13:00');
+
+Schedule::command('app:import-fitbit-data')->dailyAt('14:00');
