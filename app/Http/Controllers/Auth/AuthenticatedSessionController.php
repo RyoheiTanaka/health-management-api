@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\StoreAuthenticatedSession;
+use App\Http\Requests\Auth\StoreAuthenticatedSessionFormRequest;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\Request;
@@ -18,7 +18,7 @@ class AuthenticatedSessionController extends Controller
      *
      * @throws AuthenticationException
      */
-    public function store(StoreAuthenticatedSession $request): Response
+    public function store(StoreAuthenticatedSessionFormRequest $request): Response
     {
         $credentials = $request->only(['email', 'password']);
 
