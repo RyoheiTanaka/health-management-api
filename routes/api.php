@@ -7,6 +7,9 @@ use App\Http\Controllers\Api\FitbitWeightLogController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/auth/check', function () {
+        return response()->json(['authenticated' => true], 200);
+    });
     Route::controller(FitbitWeightLogController::class)->group(function () {
         Route::get('/fitbit/weights/{fitbitWeightLogId}', 'show');
         Route::get('/fitbit/weights', 'index');
