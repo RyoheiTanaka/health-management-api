@@ -22,3 +22,6 @@ yarn-error.log
 /.vscode
 /infra
 docker-compose.yml
+!/dist/
+/dist/*
+!/dist/.gitkeep
