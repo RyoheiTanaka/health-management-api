@@ -23,7 +23,7 @@ class CheckIP
 
         Log::info('allowedIps = ' . implode(',', $allowedIps));
         Log::info('requestIp = ' . $request->ip());
-        foreach ($request->headers as $key => $val) {
+        foreach (getallheaders() as $key => $val) {
             Log::info("{$key} = {$val}");
         }
 
