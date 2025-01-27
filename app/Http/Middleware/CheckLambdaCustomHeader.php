@@ -19,7 +19,7 @@ class CheckLambdaCustomHeader
 
         // カスタムヘッダーの値を検証
         if ($request->header('X-Lamdba-Request-Header') !== $allowedHeader) {
-            return response()->json(['error' => 'Forbidden'], 403);
+            return response()->json(['error' => 'Forbidden CheckLambdaCustomHeader'], 403);
         }
 
         return $next($request);

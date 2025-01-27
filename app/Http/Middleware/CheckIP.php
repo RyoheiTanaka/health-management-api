@@ -16,13 +16,13 @@ class CheckIP
     public function handle(Request $request, Closure $next): Response
     {
         // 許可するIPアドレス
-        $allowed_ips = [
+        $allowedIps = [
             env('AWS_LAMBDA_EIP'),
         ];
 
         // リクエスト元IPが許可されていない場合
-        if (!in_array($request->ip(), $allowed_ips)) {
-            return response()->json(['error' => 'Forbidden'], 403);
+        if (!in_array($request->ip(), $allowedIps)) {
+            return response()->json(['error' => 'Forbidden CheckIP'], 403);
         }
 
         return $next($request);
