@@ -27,9 +27,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/fitbit/badges/{fitbitBadgeLogId}', 'show');
         Route::get('/fitbit/badges', 'index');
     });
+    Route::get('/schedule-run', function () {
+        Artisan::call('schedule:run');
+        return response()->json(['message' => 'Schedule run executed successfully'], 200);
+    })->middleware('schedule-run');
 });
-
-Route::get('/schedule-run', function () {
-    Artisan::call('schedule:run');
-    return response()->json(['message' => 'Schedule run executed successfully'], 200);
-})->middleware('schedule-run');
