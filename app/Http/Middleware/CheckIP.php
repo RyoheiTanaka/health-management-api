@@ -21,6 +21,8 @@ class CheckIP
             env('AWS_LAMBDA_EIP'),
         ];
 
+        Log::info($request->header('x-real-ip'));
+        Log::info(!in_array($request->header('x-real-ip'), $allowedIps));
         // リクエスト元IPが許可されていない場合
         if (!in_array($request->header('x-real-ip'), $allowedIps)) {
             return response()->json(['error' => 'Forbidden CheckIP'], 403);
