@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class CheckIP
@@ -19,6 +20,9 @@ class CheckIP
         $allowedIps = [
             env('AWS_LAMBDA_EIP'),
         ];
+
+        Log::info('allowedIps = ' . implode(',', $allowedIps));
+        Log::info('requestIp = ' . $request->ip());
 
         // リクエスト元IPが許可されていない場合
         if (!in_array($request->ip(), $allowedIps)) {
