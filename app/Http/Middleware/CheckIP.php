@@ -23,6 +23,7 @@ class CheckIP
 
         Log::info('allowedIps = ' . implode(',', $allowedIps));
         Log::info('requestIp = ' . $request->ip());
+        Log::info('headers = ' . implode(',', getallheaders()));
 
         // リクエスト元IPが許可されていない場合
         if (!in_array($request->ip(), $allowedIps)) {
