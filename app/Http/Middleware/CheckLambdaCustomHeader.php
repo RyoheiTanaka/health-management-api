@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Crypt;
 use Symfony\Component\HttpFoundation\Response;
 
 class CheckLambdaCustomHeader
@@ -25,7 +24,7 @@ class CheckLambdaCustomHeader
 
         try {
             // カスタムヘッダーの複合
-            $decryptedCustomHeader = Crypt::decryptString($encryptedCustomHeader);
+            $decryptedCustomHeader = decrypt(base64_decode($encryptedCustomHeader));
 
             // カスタムヘッダーの値を検証
             if ($decryptedCustomHeader !== env('AWS_LAMBDA_REQUEST_HEADER')) {

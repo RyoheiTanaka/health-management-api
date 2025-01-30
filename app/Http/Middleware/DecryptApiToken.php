@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Crypt;
 use Symfony\Component\HttpFoundation\Response;
 
 class DecryptApiToken
@@ -25,7 +24,7 @@ class DecryptApiToken
                 $encryptedToken = substr($authorizationHeader, 7);
 
                 // トークンを復号
-                $decryptedToken = Crypt::decryptString($encryptedToken);
+                $decryptedToken = decrypt(base64_decode($encryptedToken));
 
                 // リクエストの `Authorization` ヘッダーを復号済みのトークンに置き換える
                 $request->headers->set('Authorization', 'Bearer ' . $decryptedToken);
