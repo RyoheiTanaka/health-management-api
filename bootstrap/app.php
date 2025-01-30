@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Middleware\CheckIP;
 use App\Http\Middleware\CheckLambdaCustomHeader;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -17,7 +16,6 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->statefulApi();
         $middleware->appendToGroup('schedule-run', [
-            CheckIP::class,
             CheckLambdaCustomHeader::class,
         ]);
     })
