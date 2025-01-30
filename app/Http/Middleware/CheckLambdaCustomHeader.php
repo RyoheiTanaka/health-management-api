@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Symfony\Component\HttpFoundation\Response;
 
 class CheckLambdaCustomHeader
@@ -15,10 +16,22 @@ class CheckLambdaCustomHeader
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $allowedHeader = env('AWS_LAMBDA_REQUEST_HEADER');
+        // カスタムヘッダーを取得
+        $encryptedCustomHeader = $request->header('X-Lamdba-Request-Header');
 
-        // カスタムヘッダーの値を検証
-        if ($request->header('X-Lamdba-Request-Header') !== $allowedHeader) {
+        if (empty($encryptedCustomHeader)) {
+            return response()->json(['error' => 'Forbidden CheckLambdaCustomHeader'], 403);
+        }
+
+        try {
+            // カスタムヘッダーの複合
+            $decryptedCustomHeader = Crypt::decryptString($encryptedCustomHeader);
+
+            // カスタムヘッダーの値を検証
+            if ($decryptedCustomHeader !== env('AWS_LAMBDA_REQUEST_HEADER')) {
+                return response()->json(['error' => 'Forbidden CheckLambdaCustomHeader'], 403);
+            }
+        } catch (\Exception $e) {
             return response()->json(['error' => 'Forbidden CheckLambdaCustomHeader'], 403);
         }
 
