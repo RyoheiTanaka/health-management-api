@@ -4,8 +4,11 @@ namespace App\Services;
 
 use App\Models\FitbitToken;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class FitbitLogService
 {
@@ -18,26 +21,42 @@ class FitbitLogService
         $this->defaultDate = Carbon::now()->format('Y-m-d');
     }
 
+    /**
+     * Fitbitのアクセストークンを取得
+     * 期限が切れていたら更新して返却
+     *
+     * @throws Exception
+     */
     public function getAccessToken(): string
     {
         $fitbitToken = FitbitToken::first();
 
-        if ($fitbitToken->expiration_datetime < Carbon::now()->format('Y-m-d H:i:s')) {
-            $response = Http::asForm()
-                ->post('https://api.fitbit.com/oauth2/token', [
-                    'grant_type' => 'refresh_token',
-                    'client_id' => env('FITBIT_CLIENT_ID'),
-                    'refresh_token' => Crypt::decrypt($fitbitToken->refresh_token),
-                ]);
+        try {
+            $fitbitToken = DB::transaction(function () use ($fitbitToken) {
+                if ($fitbitToken->expiration_datetime < Carbon::now()->format('Y-m-d H:i:s')) {
+                    $response = Http::asForm()
+                        ->post('https://api.fitbit.com/oauth2/token', [
+                            'grant_type' => 'refresh_token',
+                            'client_id' => env('FITBIT_CLIENT_ID'),
+                            'refresh_token' => Crypt::decrypt($fitbitToken->refresh_token),
+                        ]);
 
-            $result = $response->json();
+                    $result = $response->json();
 
-            $fitbitToken->delete();
-            $fitbitToken = FitbitToken::create([
-                'access_token' => Crypt::encrypt($result['access_token']),
-                'refresh_token' => Crypt::encrypt($result['refresh_token']),
-                'expiration_datetime' => Carbon::now()->addSeconds($result['expires_in'])->format('Y-m-d H:i:s'),
+                    $fitbitToken->fill([
+                        'access_token' => Crypt::encrypt($result['access_token']),
+                        'refresh_token' => Crypt::encrypt($result['refresh_token']),
+                        'expiration_datetime' => Carbon::now()->addSeconds($result['expires_in'])->format('Y-m-d H:i:s'),
+                    ])->save();
+                }
+
+                return $fitbitToken;
+            });
+        } catch (Exception $e) {
+            Log::error('アクセストークンの更新に失敗しました。', [
+                'message' => $e->getMessage(),
             ]);
+            throw new Exception('アクセストークンの更新に失敗しました。', $e->getCode());
         }
 
         if (!empty($fitbitToken) && !is_null($fitbitToken->access_token)) {
