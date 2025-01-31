@@ -22,6 +22,7 @@ class DecryptApiToken
         // `Authorization` ヘッダーを取得
         $authorizationHeader = $request->header('Authorization');
 
+        echo ($authorizationHeader);
         if ($authorizationHeader && str_starts_with($authorizationHeader, 'Bearer ')) {
             try {
                 // `Bearer ` を除去
