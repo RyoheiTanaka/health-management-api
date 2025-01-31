@@ -20,7 +20,7 @@ class CheckLambdaCustomHeader
     {
         // カスタムヘッダーを取得
         $encryptedCustomHeader = $request->header('X-Lamdba-Request-Header');
-
+        echo ($encryptedCustomHeader);
         if (empty($encryptedCustomHeader)) {
             return response()->json(['error' => 'Forbidden CheckLambdaCustomHeader'], 403);
         }

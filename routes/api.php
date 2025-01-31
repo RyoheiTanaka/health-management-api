@@ -7,6 +7,13 @@ use App\Http\Controllers\Api\FitbitWeightLogController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
+Route::middleware(['schedule-run', 'auth:sanctum'])->group(function () {
+    Route::get('/schedule-run', function () {
+        Artisan::call('schedule:run');
+        return response()->json(['message' => 'Schedule run executed successfully'], 200);
+    });
+});
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/auth/check', function () {
         return response()->json(['authenticated' => true], 200);
@@ -27,8 +34,4 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/fitbit/badges/{fitbitBadgeLogId}', 'show');
         Route::get('/fitbit/badges', 'index');
     });
-    Route::get('/schedule-run', function () {
-        Artisan::call('schedule:run');
-        return response()->json(['message' => 'Schedule run executed successfully'], 200);
-    })->middleware('schedule-run');
 });

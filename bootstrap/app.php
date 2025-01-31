@@ -15,9 +15,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->append(DecryptApiToken::class);
         $middleware->statefulApi();
         $middleware->appendToGroup('schedule-run', [
+            DecryptApiToken::class,
             CheckLambdaCustomHeader::class,
         ]);
     })
