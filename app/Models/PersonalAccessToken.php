@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Support\Str;
 use Laravel\Sanctum\PersonalAccessToken as SanctumPersonalAccessToken;
+use App\Helpers\CryptHelper;
 
 class PersonalAccessToken extends SanctumPersonalAccessToken
 {
@@ -15,7 +15,20 @@ class PersonalAccessToken extends SanctumPersonalAccessToken
      */
     public static function findToken($token)
     {
-        echo 'testtse';
-        return 'testtset';
+        $decryptToken = CryptHelper::decryptData($token);
+
+        if (!$decryptToken) {
+            return null;
+        }
+
+        if (strpos($decryptToken, '|') === false) {
+            return static::where('token', hash('sha256', $decryptToken))->first();
+        }
+
+        [$id, $token] = explode('|', $decryptToken, 2);
+
+        if ($instance = static::find($id)) {
+            return hash_equals($instance->token, hash('sha256', $token)) ? $instance : null;
+        }
     }
 }
