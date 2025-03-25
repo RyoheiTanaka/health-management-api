@@ -25,3 +25,5 @@ docker-compose.yml
 !/dist/
 /dist/*
 !/dist/.gitkeep
+
+.vercel
