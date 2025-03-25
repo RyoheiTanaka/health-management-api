@@ -35,4 +35,16 @@ return [
         ],
     ],
 
+    'fitbit' => [
+        'api_url' => env('FITBIT_API_URL'),
+        'client_id' => env('FITBIT_CLIENT_ID'),
+        'client_secret' => env('FITBIT_CLIENT_SECRET'),
+        'access_token' => env('FITBIT_ACCESS_TOKEN'),
+        'redirect_uri' => env('FITBIT_REDIRECT_URI'),
+    ],
+
+    'healthplanet' => [
+        'access_token' => env('HEALTHPLANET_ACCESS_TOKEN'),
+    ]
+
 ];

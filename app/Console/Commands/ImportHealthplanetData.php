@@ -29,7 +29,7 @@ class ImportHealthplanetData extends Command
     public function handle()
     {
         $response = Http::asForm()->post('https://www.healthplanet.jp/status/innerscan.json', [
-            'access_token' => env('HEALTHPLANET_ACCESS_TOKEN'),
+            'access_token' => config('services.healthplanet.access_token'),
             'date' => 1
         ]);
 
