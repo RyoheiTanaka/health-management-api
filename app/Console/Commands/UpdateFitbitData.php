@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -34,7 +35,7 @@ class UpdateFitbitData extends Command
     {
         Log::info('Fitbitデータ登録開始');
 
-        $url = env('FITBIT_API_URL');
+        $url = config('services.fitbit.api_url');
         $accessToken = $this->getAccessToken();
 
         $innerScanData = Innerscan::where('is_data_linkage', 0)->get();
@@ -104,27 +105,45 @@ class UpdateFitbitData extends Command
         $fitbitToken = FitbitToken::first();
 
         if ($fitbitToken->expiration_datetime < Carbon::now()->format('Y-m-d H:i:s')) {
+            $clientId = config('services.fitbit.client_id');
+            $clientSecret = config('services.fitbit.client_secret');
+
+            $authorizationHeader = base64_encode("{$clientId}:{$clientSecret}");
+
             $response = Http::asForm()
+                ->withHeaders([
+                    'Authorization' => 'Bearer ' . $authorizationHeader
+                ])
                 ->post('https://api.fitbit.com/oauth2/token', [
                     'grant_type' => 'refresh_token',
-                    'client_id' => env('FITBIT_CLIENT_ID'),
+                    'client_id' => $clientId,
                     'refresh_token' => Crypt::decrypt($fitbitToken->refresh_token),
                 ]);
 
             $result = $response->json();
 
-            $fitbitToken->delete();
-            $fitbitToken = FitbitToken::create([
-                'access_token' => Crypt::encrypt($result['access_token']),
-                'refresh_token' => Crypt::encrypt($result['refresh_token']),
-                'expiration_datetime' => Carbon::now()->addSeconds($result['expires_in'])->format('Y-m-d H:i:s'),
-            ]);
+            if (!$result['success']) {
+                Log::error('トークンリフレッシュに失敗しました。', [
+                    'errorType' => $result['errors'][0]['errorType'],
+                    'message' => $result['errors'][0]['message'],
+                ]);
+                exit;
+            }
+
+            DB::transaction(function ($fitbitToken, $result) {
+                $fitbitToken->delete();
+                $fitbitToken = FitbitToken::create([
+                    'access_token' => Crypt::encrypt($result['access_token']),
+                    'refresh_token' => Crypt::encrypt($result['refresh_token']),
+                    'expiration_datetime' => Carbon::now()->addSeconds($result['expires_in'])->format('Y-m-d H:i:s'),
+                ]);
+            });
         }
 
         if (!empty($fitbitToken) && !is_null($fitbitToken->access_token)) {
             return Crypt::decrypt($fitbitToken->access_token);
         }
 
-        return env('FITBIT_ACCESS_TOKEN');
+        return config('services.fitbit.access_token');
     }
 }

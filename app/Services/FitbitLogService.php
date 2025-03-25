@@ -17,7 +17,7 @@ class FitbitLogService
 
     public function __construct()
     {
-        $this->fitbitApiUrl = env('FITBIT_API_URL');
+        $this->fitbitApiUrl = config('services.fitbit.api_url');
         $this->defaultDate = Carbon::now()->format('Y-m-d');
     }
 
@@ -37,7 +37,7 @@ class FitbitLogService
                     $response = Http::asForm()
                         ->post('https://api.fitbit.com/oauth2/token', [
                             'grant_type' => 'refresh_token',
-                            'client_id' => env('FITBIT_CLIENT_ID'),
+                            'client_id' => config('services.fitbit.client_id'),
                             'refresh_token' => Crypt::decrypt($fitbitToken->refresh_token),
                         ]);
 
@@ -63,7 +63,7 @@ class FitbitLogService
             return Crypt::decrypt($fitbitToken->access_token);
         }
 
-        return env('FITBIT_ACCESS_TOKEN');
+        return config('services.fitbit.access_token');
     }
 
     /**
