@@ -11,7 +11,7 @@
 
 ## 🛠 技術スタック
 
--   **フレームワーク:** Laravel 11
+-   **フレームワーク:** Laravel 12
 -   **データベース:** PostgreSQL
 -   **認証:** Laravel Sanctum
 -   **API 設計:** RESTful API
