@@ -1,0 +1,44 @@
+# Laravel用のDockerfile
+
+# ベースイメージとしてPHP 8.2を使用
+FROM php:8.2-fpm
+
+# 必要なパッケージをインストール
+RUN apt-get update && apt-get install -y cron \
+    git \
+    unzip \
+    libpq-dev \
+    && docker-php-ext-install pdo pdo_pgsql \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# cronとphp-fpmを同時に実行するスクリプトを追加
+COPY ./docker/php/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# デフォルトコマンドをエントリポイントスクリプトに置き換え
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
+# Xdebugのインストール
+RUN pecl install xdebug
+
+# Xdebugの設定ファイルをコピー
+COPY ./docker/php/xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+
+# 環境変数でXdebugの有効/無効を制御
+ENV PHP_XDEBUG_ENABLED=1
+
+# Composerをインストール
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# 作業ディレクトリを設定
+WORKDIR /var/www/html
+
+# 権限を設定
+RUN chown -R www-data:www-data /var/www/html
+
+# Laravelアプリケーションの起動準備\
+COPY . .
+
+# 権限を設定
+RUN chmod -R 755 /var/www/html/storage /var/www/html/bootstrap/cache

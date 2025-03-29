@@ -20,8 +20,6 @@ yarn-error.log
 /.vscode
 /.zed
 /.vscode
-/infra
-docker-compose.yml
 !/dist/
 /dist/*
 !/dist/.gitkeep
