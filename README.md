@@ -1,120 +1,81 @@
-# 🏥 健康管理ウェブアプリ - バックエンド
+# 健康管理アプリ - バックエンド（Laravel API）
 
-## 📌 概要
+![Laravel](https://img.shields.io/badge/Laravel-12.x-red?logo=laravel)
+![PHP](https://img.shields.io/badge/PHP-8.2-blue?logo=php)
+![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL-blue?logo=postgresql)
+![Sanctum](https://img.shields.io/badge/Auth-Sanctum-orange)
+![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)
 
-このリポジトリは、健康管理ウェブアプリのバックエンドのソースコードです。
-ユーザーの健康データを管理し、分析するための API を提供します。
-
-🔗 **フロントエンドリポジトリ:** [https://github.com/RyoheiTanaka/health-management-frontend](https://github.com/RyoheiTanaka/health-management-frontend)
-
----
-
-## 🛠 技術スタック
-
--   **フレームワーク:** Laravel 12
--   **データベース:** PostgreSQL
--   **認証:** Laravel Sanctum
--   **API 設計:** RESTful API
--   **デプロイ:** Vercel
+このリポジトリは、**健康管理アプリのバックエンド API** を構成する Laravel アプリケーションです。  
+記録対象は「体重・体脂肪率・睡眠時間」。ユーザー認証やデータ管理を担い、フロントエンドアプリと API を通じて連携します。
 
 ---
 
-## API仕様書
+## 🌐 公開情報
 
-https://ryoheitanaka.github.io/health-management-api-openapi/
+-   フロントエンド：  
+    👉 [health-management-frontend](https://github.com/RyoheiTanaka/health-management-frontend)
+
+-   API 仕様書（Swagger UI）：  
+    👉 [https://docs-health-management.coolat.net/](https://docs-health-management.coolat.net/)
+
+-   デモアプリ（Vercel + Supabase）：  
+    👉 https://health-management.coolat.net
 
 ---
 
-## 🔧 Docker 環境のセットアップ
+## 🛠 使用技術スタック
 
-このプロジェクトでは、Docker を利用した開発環境を提供しています。以下の手順で環境を起動できます。
+-   **Laravel 12**
+-   **PHP 8.2**
+-   **PostgreSQL**
+-   **Laravel Sanctum**（SPA 認証）
+-   **Supabase**（本番データベース環境）
+-   **Vercel**（フロントと合わせて運用）
 
-### 前提条件
+---
 
--   Docker がインストールされていること
--   Docker Compose がインストールされていること
+## 💡 設計・構築のポイント
 
-### Docker 環境の起動
+-   SPA 対応：Sanctum による Cookie ベースの認証
+-   RESTful 設計：リソース指向でわかりやすい API 設計
+-   環境変数によりローカルと本番（Supabase）を切り替え可能
+-   データベースは PostgreSQL を使用（マイグレーション対応済）
 
-プロジェクトのルートディレクトリで、以下のコマンドを実行します。
+---
+
+## ▶️ ローカル開発手順
 
 ```bash
-./docker.sh up
+git clone https://github.com/RyoheiTanaka/health-management-api.git
+cd health-management-api
+
+cp .env.example .env
+composer install
+php artisan key:generate
+php artisan migrate --seed
+php artisan serve
 ```
 
-必要に応じて、以下のオプションを指定できます。
-
--   `--build`: コンテナ起動前に Docker イメージをビルドします。
--   `--no-cache`: イメージのビルド時にキャッシュを使用しません。
-
-例：
-
-```bash
-./docker.sh up --build
-./docker.sh up --no-cache
-./docker.sh up --build --no-cache
-```
-
-### Docker 環境の停止 (コンテナ削除)
-
-```bash
-./docker.sh down
-```
-
-### コンテナの停止 (コンテナは残す)
-
-```bash
-./docker.sh stop
-```
-
-### 環境変数の設定
-
-Docker 環境に必要な環境変数は、`docker/.env` ファイルに記述します。必要に応じて `.env.example` を参考に `.env` ファイルを作成してください。
-
-```
-# docker/.env の例
-DOCKER_PHP_MEMORY_LIMIT=256M
-DOCKER_PHP_XDEBUG_ENABLED=1
-# ... 他の環境変数 ...
-```
-
-### 注意事項
-
--   初めて Docker 環境を起動する際は、イメージのダウンロードなどで時間がかかる場合があります。
--   ポートの競合が発生する場合は、`docker/docker-compose.yml` の `ports` 設定を見直してください。
+.env にて DB 接続情報、CORS ドメイン、フロントエンド URL などの設定が必要です。
+Supabase を使用する場合は .env.production 等で環境ごとに切り替えてください。
 
 ---
 
-## 📂 機能一覧
+## 📄 ライセンス
 
--   📊 **健康データ管理:** 体重・体脂肪率・睡眠記録の登録・更新
--   📅 **データ分析:** 期間ごとの健康データの情報取得
--   🔑 **認証・認可:** フロントエンドからは SPA 認証、Lamda からは API 認証（Sanctum）
+MIT License
+Copyright (c) 2024 Ryohei Tanaka
 
----
-
-## 🛡 セキュリティ対策
-
--   **環境変数の管理:** `.env` ファイルを `.gitignore` に追加
--   **SPA 認証:** Laravel Sanctum を使用した SPA 認証
--   **API 認証:** Laravel Sanctum を使用したトークン認証、独自の暗号化処理追加
--   **CORS 設定:** `config/cors.php` で適切なオリジン設定
+このソフトウェアは [`MITライセンス`](./LICENSE) に基づき公開されています。
+商用・個人利用・改変・再配布すべて自由ですが、著作権表記は保持してください。
 
 ---
 
-## 📝 ライセンス
+## 👤 開発者
 
-このプロジェクトのソースコードの **改変・複製・再配布を禁止** します。
-詳細は [`LICENSE`](./LICENSE) をご覧ください。
+田中 涼平（@RyoheiTanaka）
 
----
+Email: ryohei.tanaka@coolat.net
 
-## 📬 お問い合わせ
-
-何か質問があれば、お気軽にご連絡ください！
-
-📧 **Email:** ryohei.tanaka@coolat.net
-
----
-
-🚀 **ご覧いただき、ありがとうございます！** 🙌
+ご利用いただきありがとうございます 🙌
