@@ -1,16 +1,17 @@
 <?php
 
+use App\Http\Controllers\Api\AuthenticatedCheckController;
 use App\Http\Controllers\Api\FitbitBadgeLogController;
 use App\Http\Controllers\Api\FitbitFatLogController;
 use App\Http\Controllers\Api\FitbitSleepLogController;
 use App\Http\Controllers\Api\FitbitWeightLogController;
+use App\Http\Controllers\Api\ScheduleRunController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/auth/check', function () {
-        return response()->json(['authenticated' => true], 200);
-    });
+    Route::get('/auth/check', [AuthenticatedCheckController::class, 'index'])->name('authCheck');
+
     Route::controller(FitbitWeightLogController::class)->group(function () {
         Route::get('/fitbit/weights/{fitbitWeightLogId}', 'show');
         Route::get('/fitbit/weights', 'index');
@@ -28,8 +29,5 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/fitbit/badges', 'index');
     });
 
-    Route::get('/schedule-run', function () {
-        Artisan::call('schedule:run');
-        return response()->json(['message' => 'Schedule run executed successfully'], 200);
-    })->middleware('schedule-run');
+    Route::get('/schedule-run', [ScheduleRunController::class, 'index'])->middleware('schedule-run')->name('scheduleRun');
 });

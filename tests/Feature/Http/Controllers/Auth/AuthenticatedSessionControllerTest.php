@@ -20,3 +20,7 @@ it('can login', function () {
         'password' => 'password',
     ])->assertStatus(200);
 });
+
+it('can logout', function () {
+    $this->actingAs(User::factory()->create())->post('/logout')->assertStatus(200);
+});
