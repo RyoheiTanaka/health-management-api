@@ -11,6 +11,7 @@ DB_DATABASE=$(pwd)/database/database.sqlite
 CACHE_STORE=array
 QUEUE_CONNECTION=sync
 SESSION_DRIVER=array
+AWS_LAMBDA_REQUEST_HEADER=aws_lambda_request_header
 EOL
 
 echo "✅ .env.testing created!"

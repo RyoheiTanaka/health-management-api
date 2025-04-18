@@ -7,6 +7,22 @@ use Illuminate\Support\Facades\Log;
 class CryptHelper
 {
     /**
+     * データ暗号化
+     */
+    public static function encryptData(string $data): string
+    {
+        $appKey = base64_decode(str_replace('base64:', '', env('APP_KEY')));
+
+        $iv = openssl_random_pseudo_bytes(16);
+        $value = openssl_encrypt($data, 'aes-256-cbc', $appKey, OPENSSL_RAW_DATA, $iv);
+
+        return base64_encode(json_encode([
+            'iv' => base64_encode($iv),
+            'value' => base64_encode($value),
+        ]));
+    }
+
+    /**
      * データ復号化
      */
     public static function decryptData(string $encryptedBase64): string
