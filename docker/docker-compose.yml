@@ -24,6 +24,7 @@ services:
             DB_HOST: ${DOCKER_DB_HOST}
             DB_PORT: ${DOCKER_DB_PORT}
             DB_DATABASE: ${DB_DATABASE}
+            DB_SCHEMA: ${DB_SCHEMA}
             DB_USERNAME: ${DB_USERNAME}
             DB_PASSWORD: ${DB_PASSWORD}
         depends_on:
