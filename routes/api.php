@@ -6,7 +6,6 @@ use App\Http\Controllers\Api\FitbitFatLogController;
 use App\Http\Controllers\Api\FitbitSleepLogController;
 use App\Http\Controllers\Api\FitbitWeightLogController;
 use App\Http\Controllers\Api\ScheduleRunController;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
