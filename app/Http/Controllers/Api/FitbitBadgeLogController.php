@@ -5,10 +5,13 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\FitbitBadgeLog\IndexFitbitBadgeLogFormRequest;
 use App\Http\Requests\Api\FitbitBadgeLog\ShowFitbitBadgeLogFormRequest;
-use App\Models\FitbitBadgeLog;
+use App\Http\Resources\FitbitBadgeLogResource;
+use App\Services\FitbitBadgeLogService;
 
 class FitbitBadgeLogController extends Controller
 {
+    public function __construct(protected FitbitBadgeLogService $fitbitBadgeLogService) {}
+
     /**
      * Handle the incoming index request.
      */
@@ -16,12 +19,10 @@ class FitbitBadgeLogController extends Controller
     {
         $isDashboard = $request->is_dashboard ?? false;
 
-        $badgeLogs = FitbitBadgeLog::when($isDashboard, function ($query) {
-            return $query->limit(5);
-        })->get();
+        $badgeLogs = $this->fitbitBadgeLogService->getBadgeLogs($isDashboard);
 
         return response([
-            'data' => $badgeLogs
+            'data' => FitbitBadgeLogResource::collection($badgeLogs)
         ]);
     }
 
@@ -30,10 +31,10 @@ class FitbitBadgeLogController extends Controller
      */
     public function show(ShowFitbitBadgeLogFormRequest $request, int $fitbitBadgeLogId)
     {
-        $badgeLog = FitbitBadgeLog::find($fitbitBadgeLogId);
+        $badgeLog = $this->fitbitBadgeLogService->getBadgeLog($fitbitBadgeLogId);
 
         return response([
-            'data' => $badgeLog
+            'data' => new FitbitBadgeLogResource($badgeLog)
         ]);
     }
 }

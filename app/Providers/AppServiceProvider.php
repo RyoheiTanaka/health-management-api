@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Models\PersonalAccessToken;
+use App\Repositories\Eloquent\FitbitBadgeLogRepository;
+use App\Repositories\FitbitBadgeLogRepositoryInterface;
 use Laravel\Sanctum\Sanctum;
 use Illuminate\Support\ServiceProvider;
 
@@ -13,7 +15,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(FitbitBadgeLogRepositoryInterface::class, FitbitBadgeLogRepository::class);
     }
 
     /**
