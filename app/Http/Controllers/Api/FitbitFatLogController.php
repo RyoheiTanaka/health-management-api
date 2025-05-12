@@ -5,11 +5,15 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\FitbitFatLog\IndexFitbitFatLogFormRequest;
 use App\Http\Requests\Api\FitbitFatLog\ShowFitbitFatLogFormRequest;
+use App\Http\Resources\FitbitFatLogResource;
 use App\Models\FitbitFatLog;
+use App\Services\FitbitFatLogService;
 use Carbon\Carbon;
 
 class FitbitFatLogController extends Controller
 {
+    public function __construct(protected FitbitFatLogService $fitbitFatLogService) {}
+
     /**
      * Handle the incoming index request.
      */
@@ -17,13 +21,10 @@ class FitbitFatLogController extends Controller
     {
         $isDashboard = $request->is_dashboard ?? false;
 
-        $fatLogs = FitbitFatLog::when($isDashboard, function ($query) {
-            $date = (new Carbon())->subWeek()->format('Y-m-d');
-            return $query->where('date', '>=', $date);
-        })->orderBy('date')->get();
+        $fatLogs = $this->fitbitFatLogService->getFatLogs($isDashboard);
 
         return response([
-            'data' => $fatLogs
+            'data' => FitbitFatLogResource::collection($fatLogs)
         ]);
     }
 
@@ -32,10 +33,10 @@ class FitbitFatLogController extends Controller
      */
     public function show(ShowFitbitFatLogFormRequest $request, int $fitbitFatLogId)
     {
-        $fatLog = FitbitFatLog::find($fitbitFatLogId);
+        $fatLog = $this->fitbitFatLogService->getFatLog($fitbitFatLogId);
 
         return response([
-            'data' => $fatLog
+            'data' => new FitbitFatLogResource($fatLog)
         ]);
     }
 }
