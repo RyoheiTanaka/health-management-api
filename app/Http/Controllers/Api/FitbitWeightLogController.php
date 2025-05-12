@@ -5,11 +5,13 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\FitbitWeightLog\IndexFitbitWeightLogFormRequest;
 use App\Http\Requests\Api\FitbitWeightLog\ShowFitbitWeightLogFormRequest;
-use App\Models\FitbitWeightLog;
-use Carbon\Carbon;
+use App\Http\Resources\FitbitWeightLogResource;
+use App\Services\FitbitWeightLogService;
 
 class FitbitWeightLogController extends Controller
 {
+    public function __construct(protected FitbitWeightLogService $fitbitWeightLogService) {}
+
     /**
      * Handle the incoming index request.
      */
@@ -17,13 +19,10 @@ class FitbitWeightLogController extends Controller
     {
         $isDashboard = $request->is_dashboard ?? false;
 
-        $weightLogs = FitbitWeightLog::when($isDashboard, function ($query) {
-            $date = (new Carbon())->subWeek()->format('Y-m-d');
-            return $query->where('date', '>=', $date);
-        })->orderBy('date')->get();
+        $weightLogs = $this->fitbitWeightLogService->getweightLogs($isDashboard);
 
         return response([
-            'data' => $weightLogs
+            'data' => FitbitWeightLogResource::collection($weightLogs)
         ]);
     }
 
@@ -32,10 +31,10 @@ class FitbitWeightLogController extends Controller
      */
     public function show(ShowFitbitWeightLogFormRequest $request, int $fitbitWeightLogId)
     {
-        $weightLog = FitbitWeightLog::find($fitbitWeightLogId);
+        $weightLog = $this->fitbitWeightLogService->getweightLog($fitbitWeightLogId);
 
         return response([
-            'data' => $weightLog
+            'data' => new FitbitWeightLogResource($weightLog)
         ]);
     }
 }
