@@ -5,11 +5,13 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\FitbitSleepLog\IndexFitbitSleepLogFormRequest;
 use App\Http\Requests\Api\FitbitSleepLog\ShowFitbitSleepLogFormRequest;
+use App\Http\Resources\FitbitSleepLogResource;
 use App\Models\FitbitSleepLog;
-use Carbon\Carbon;
+use App\Services\FitbitSleepLogService;
 
 class FitbitSleepLogController extends Controller
 {
+    public function __construct(protected FitbitSleepLogService $fitbitSleepLogService) {}
     /**
      * Handle the incoming index request.
      */
@@ -17,13 +19,10 @@ class FitbitSleepLogController extends Controller
     {
         $isDashboard = $request->is_dashboard ?? false;
 
-        $sleepLogs = FitbitSleepLog::when($isDashboard, function ($query) {
-            $date = (new Carbon())->subWeek()->format('Y-m-d');
-            return $query->where('date_of_sleep', '>=', $date);
-        })->orderBy('date_of_sleep')->get();
+        $sleepLogs = $this->fitbitSleepLogService->getSleepLogs($isDashboard);
 
         return response([
-            'data' => $sleepLogs
+            'data' => FitbitSleepLogResource::collection($sleepLogs)
         ]);
     }
 
@@ -32,10 +31,10 @@ class FitbitSleepLogController extends Controller
      */
     public function show(ShowFitbitSleepLogFormRequest $request, int $fitbitSleepLogId)
     {
-        $sleepLog = FitbitSleepLog::find($fitbitSleepLogId);
+        $sleepLog = $this->fitbitSleepLogService->getSleepLog($fitbitSleepLogId);
 
         return response([
-            'data' => $sleepLog
+            'data' => new FitbitSleepLogResource($sleepLog)
         ]);
     }
 }
