@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Artisan;
 
 class ScheduleRunController extends Controller
 {
-    public function index(Request $request)
+    public function __invoke(Request $request)
     {
         Artisan::call('schedule:run');
         return response()->json(['message' => 'Schedule run executed successfully'], 200);

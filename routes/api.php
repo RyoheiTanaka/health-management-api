@@ -28,5 +28,5 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/fitbit/badges', 'index');
     });
 
-    Route::get('/schedule-run', [ScheduleRunController::class, 'index'])->middleware('schedule-run')->name('scheduleRun');
+    Route::get('/schedule-run', ScheduleRunController::class)->middleware('schedule-run')->name('scheduleRun');
 });
