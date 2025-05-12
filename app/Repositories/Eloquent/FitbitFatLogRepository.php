@@ -9,8 +9,6 @@ use Illuminate\Support\Collection;
 
 class FitbitFatLogRepository implements FitbitFatLogRepositoryInterface
 {
-    private $dashboardLimit = 5;
-
     public function getFatLogs(bool $isDashboard): Collection
     {
         return FitbitFatLog::when($isDashboard, function ($query) {

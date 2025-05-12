@@ -9,8 +9,6 @@ use Illuminate\Support\Collection;
 
 class FitbitWeightLogRepository implements FitbitWeightLogRepositoryInterface
 {
-    private $dashboardLimit = 5;
-
     public function getWeightLogs(bool $isDashboard): Collection
     {
         return FitbitWeightLog::when($isDashboard, function ($query) {
