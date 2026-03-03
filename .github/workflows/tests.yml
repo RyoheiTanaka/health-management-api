@@ -20,15 +20,15 @@ jobs:
           extensions: mbstring, bcmath, sqlite
           tools: composer:v2
 
-      - name: Cache Composer dependencies
-        uses: actions/cache@v3
-        with:
-          path: vendor
-          key: composer-${{ hashFiles('composer.lock') }}
-          restore-keys: composer-
+      # - name: Cache Composer dependencies
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: vendor
+      #     key: composer-${{ hashFiles('composer.lock') }}
+      #     restore-keys: composer-
 
       - name: Install Composer dependencies
-        run: composer install --no-interaction --prefer-dist --optimize-autoloader --no-scripts
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
       - name: Make generate-env.sh executable
         run: chmod +x scripts/generate-env.sh
@@ -37,12 +37,6 @@ jobs:
         run: bash scripts/generate-env.sh
         env:
           APP_KEY: ${{ secrets.APP_KEY }}
-
-      - name: Copy .env.testing to .env
-        run: cp .env.testing .env
-
-      - name: Run post-install scripts
-        run: composer run-script post-autoload-dump
 
       - name: Prepare SQLite DB file
         run: |
