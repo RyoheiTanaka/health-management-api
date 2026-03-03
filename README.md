@@ -2,7 +2,7 @@
 
 ![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Laravel](https://img.shields.io/badge/Laravel-12.x-red?logo=laravel)
-![PHP](https://img.shields.io/badge/PHP-8.2-blue?logo=php)
+![PHP](https://img.shields.io/badge/PHP-8.4-blue?logo=php)
 ![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL-blue?logo=postgresql)
 ![Sanctum](https://img.shields.io/badge/Auth-Sanctum-orange)  
 ![Tests by Pest](https://github.com/RyoheiTanaka/health-management-api/actions/workflows/tests.yml/badge.svg?branch=main)
@@ -28,7 +28,7 @@
 ## 🛠 使用技術スタック
 
 -   **Laravel 12**
--   **PHP 8.2**
+-   **PHP 8.4**
 -   **PostgreSQL**
 -   **Laravel Sanctum**（SPA 認証）
 -   **Supabase**（本番データベース環境）
