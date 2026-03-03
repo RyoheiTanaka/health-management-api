@@ -32,6 +32,8 @@ jobs:
 
       - name: Generate .env.testing
         run: bash scripts/generate-env.sh
+        env:
+          APP_KEY: ${{ secrets.APP_KEY }}
 
       - name: Install Composer dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
