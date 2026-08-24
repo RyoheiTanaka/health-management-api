@@ -10,6 +10,20 @@
 このリポジトリは、**健康管理アプリのバックエンド API** を構成する Laravel アプリケーションです。  
 記録対象は「体重・体脂肪率・睡眠時間」。ユーザー認証やデータ管理を担い、フロントエンドアプリと API を通じて連携します。
 
+
+> ## ⚠️ このサービスは終了しました（2026-08）
+>
+> 体重管理（ヘルスプラネット）と睡眠計測（Fitbit）の利用をやめ、記録するデータが無くなったため、
+> サービスとしての稼働を終了しました。再開の予定はありません。
+>
+> **コードとAPI仕様書は、制作物の記録として公開したまま残しています。**
+>
+> - API 仕様書（Redoc / GitHub Pages）: https://docs-health-management.coolat.net/ ← 閲覧可
+> - デモアプリ: 公開終了
+>
+> Vercel へのデプロイ設定（`vercel.json` / `.vercelignore` / `api/index.php` /
+> `revolution/laravel-vercel-installer`）は 2026-08 に削除済みです。
+
 ---
 
 ## 🌐 公開情報
@@ -21,7 +35,7 @@
     👉 [https://docs-health-management.coolat.net/](https://docs-health-management.coolat.net/)
 
 -   デモアプリ（Vercel + Supabase）：  
-    👉 https://health-management.coolat.net
+    👉 **公開終了**（2026-08。下記の「サービス終了について」を参照）
 
 ---
 
